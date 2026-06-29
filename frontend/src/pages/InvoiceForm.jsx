@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { pdf } from '@react-pdf/renderer';
 import InvoicePDF from './InvoicePDF';
+import logo1 from "../assets/icons/Logo.svg";
+import logo2 from "../assets/icons/logo1.svg";
 
 const InvoiceForm = () => {
     // Pre-filled demo data for testing
     const [orderNo, setOrderNo] = useState('INV-2026-0522-017');
     const [customerName, setCustomerName] = useState('The Hamilton Family Office');
-    const [phoneNumber, setPhoneNumber] = useState('+44 20 7123 4567');
+    const [vatRate, setVatRate] = useState(6.5);
     const [address, setAddress] = useState('25 Berkeley Square\nMayfair, London W1J 6QF\nUnited Kingdom');
     const [attention, setAttention] = useState('Mr. Edward Hamilton');
     const [email, setEmail] = useState('ehamilton@hamiltonfq.com');
     const [date, setDate] = useState('May 22, 2026');
     const [dueDate, setDueDate] = useState('June 21, 2026');
+    const [activeTab, setActiveTab] = useState('invoice');
     const [items, setItems] = useState([
         {
             id: 1,
@@ -87,13 +90,13 @@ const InvoiceForm = () => {
         setIsGenerating(true);
         try {
             const netTotal = calculateTotal();
-            const vat = netTotal * 0.065;
+            const vat = netTotal * (vatRate / 100);
             const grossTotal = netTotal + vat;
 
             const invoiceData = {
                 orderNo: orderNo,
                 customerName: customerName,
-                phoneNumber: phoneNumber,
+                vatRate: vatRate,
                 address: address,
                 date: date,
                 dueDate: dueDate,
@@ -132,337 +135,418 @@ const InvoiceForm = () => {
         }
     };
 
+    // Helper function to format currency
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(amount);
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-            {/* Premium Header */}
-            <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-20"></div>
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-                    <div className="text-center">
-                        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-6">
-                            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                            <span className="text-sm font-medium text-white/90">Premium Invoice Generator</span>
-                        </div>
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 tracking-tight">
-                            Create Professional Invoices
-                        </h1>
-                        <p className="text-lg text-white/70 max-w-2xl mx-auto">
-                            Generate elegant, premium invoices for your high-value transactions with just a few clicks
-                        </p>
-                    </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-            </div>
+        <div className="min-h-screen bg-[#EFEEF1]" style={{ fontFamily: "'Epilogue', sans-serif" }}>
+            {/* Main container */}
+            <div className="">
 
-            {/* Main Content */}
-            <div className="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-300">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-slate-500 mb-1">Total Items</p>
-                                <p className="text-2xl font-bold text-slate-900">{items.length}</p>
-                            </div>
-                            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                </svg>
-                            </div>
-                        </div>
+                {/* Header */}
+                <div className="flex justify-between items-center pt-3 px-[100px]">
+                    <div className="flex items-center gap-3">
+                        <img src={logo1} alt="Kunu Labs" className="" />
                     </div>
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-300">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-slate-500 mb-1">Net Total</p>
-                                <p className="text-2xl font-bold text-slate-900">€{calculateTotal().toLocaleString()}</p>
-                            </div>
-                            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-300">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-slate-500 mb-1">VAT (6.5%)</p>
-                                <p className="text-2xl font-bold text-slate-900">€{(calculateTotal() * 0.065).toLocaleString()}</p>
-                            </div>
-                            <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828a2 2 0 01.586 1.414V19a2 2 0 01-2 2z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-sm p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-white/70 mb-1">Gross Total</p>
-                                <p className="text-2xl font-bold text-white">€{(calculateTotal() * 1.065).toLocaleString()}</p>
-                            </div>
-                            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                                </svg>
-                            </div>
-                        </div>
+
+                    <div className="flex items-center gap-3">
+                        <span className="font-semibold text-[16px] tracking-[0.08em] uppercase text-[#222222]">
+                            Veristone
+                        </span>
+                        <img src={logo2} alt="Veristone" className="h-[49px] w-[62px]" />
                     </div>
                 </div>
 
-                {/* Form Card */}
-                <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-                    <div className="border-b border-slate-200 bg-slate-50/50 px-6 md:px-8 py-5">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center">
-                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                            </div>
-                            <h2 className="text-lg font-semibold text-slate-900">Invoice Information</h2>
+                {/* Main Content Card - Full width, no rounding */}
+                <div className="mt-6 bg-white overflow-hidden">
+
+                    {/* Tab Navigation */}
+                    <div className="flex items-start px-[100px] p-6 gap-8 border-gray-100">
+                        <div className="flex-1">
+                            <h1 className="font-['Merriweather'] font-bold text-[46px] leading-[42px] tracking-[-0.8px] text-[#12141D]">
+                                PDF Generator for Veristone
+                            </h1>
+                            <p className="font-['Epilogue'] font-light text-[18px] leading-[24px] text-[#131313] mt-2">
+                                Powered by kuru labs
+                            </p>
+                        </div>
+
+                        {/* Tab Switcher */}
+                        <div className="flex rounded-full border border-[rgba(19,19,19,0.2)] overflow-hidden bg-white h-[48px]">
+                            <button
+                                onClick={() => setActiveTab('invoice')}
+                                className={`px-5 py-2 text-[16px] font-medium transition-all duration-300 ${activeTab === 'invoice'
+                                    ? 'bg-[#131313] text-white rounded-[60px] px-6'
+                                    : 'bg-transparent text-[#131313] font-light px-6'
+                                    }`}
+                            >
+                                Invoice Generator
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('confirmation')}
+                                className={`px-5 py-2 text-[16px] font-light transition-all duration-300 ${activeTab === 'confirmation'
+                                    ? 'bg-[#131313] text-white rounded-[60px] px-6'
+                                    : 'bg-transparent text-[#131313] font-light px-6'
+                                    }`}
+                            >
+                                Order Confirmation
+                            </button>
                         </div>
                     </div>
 
-                    <div className="p-6 md:p-8">
-                        {/* Order & Customer Information */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                            <div className="space-y-6">
+                    {/* Form Content */}
+                    <div className="py-6">
+                        <div className="flex flex-wrap gap-[58px] mb-6 px-[100px]">
+                            <div className="bg-[#EFEEF1] rounded-xl p-4" style={{ width: '286px' }}>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="font-['Epilogue'] font-light text-[16px] leading-[24px] text-[#131313]">Total Items</p>
+                                        <p className="font-['Epilogue'] font-semibold text-[20px] leading-[24px] tracking-[-0.5px] text-[#12141D]">
+                                            {items.length}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-[#EFEEF1] rounded-xl p-4" style={{ width: '286px' }}>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="font-['Epilogue'] font-light text-[16px] leading-[24px] text-[#131313]">Net Total</p>
+                                        <p className="font-['Epilogue'] font-semibold text-[20px] leading-[24px] tracking-[-0.5px] text-[#12141D]">
+                                            €{formatCurrency(calculateTotal())}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-[#EFEEF1] rounded-xl p-4" style={{ width: '286px' }}>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828a2 2 0 01.586 1.414V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="font-['Epilogue'] font-light text-[16px] leading-[24px] text-[#131313]">VAT ({vatRate}%)</p>
+                                        <p className="font-['Epilogue'] font-semibold text-[20px] leading-[24px] tracking-[-0.5px] text-[#12141D]">
+                                            €{formatCurrency(calculateTotal() * (vatRate / 100))}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-[#EFEEF1] rounded-xl p-4" style={{ width: '286px' }}>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="font-['Epilogue'] font-light text-[16px] leading-[24px] text-[#131313]">Gross Total</p>
+                                        <p className="font-['Epilogue'] font-semibold text-[20px] leading-[24px] tracking-[-0.5px] text-[#12141D]">
+                                            €{formatCurrency(calculateTotal() * (1 + vatRate / 100))}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Form Fields - Invoice Information Section */}
+                        <div className="mb-6 px-[100px] pt-0">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 bg-[#131313] rounded-full flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    </svg>
+                                </div>
+                                <h2 className="font-['Lora'] font-medium text-[18px] leading-[24px] text-[#131313]">
+                                    Invoice Information
+                                </h2>
+                            </div>
+
+                            {/* Row 1: Invoice Number and Customer Name */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                        Order Number <span className="text-red-500">*</span>
+                                    <label className="font-['Epilogue'] font-normal text-[16px] leading-[24px] text-[#131313] block mb-2">
+                                        Invoice Number
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                                             </svg>
                                         </div>
                                         <input
                                             type="text"
                                             value={orderNo}
                                             onChange={(e) => setOrderNo(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 bg-slate-50/50"
-                                            placeholder="e.g., INV-2026-0522-017"
+                                            className="w-full pl-11 pr-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
+                                            placeholder="INV-2026-0522-017"
                                         />
                                     </div>
                                 </div>
+
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                        Customer Name <span className="text-red-500">*</span>
+                                    <label className="font-['Epilogue'] font-normal text-[16px] leading-[24px] text-[#131313] block mb-2">
+                                        Customer Name
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                         </div>
                                         <input
                                             type="text"
                                             value={customerName}
                                             onChange={(e) => setCustomerName(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 bg-slate-50/50"
+                                            className="w-full pl-11 pr-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
                                             placeholder="The Hamilton Family Office"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                        Phone Number
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                            </svg>
-                                        </div>
-                                        <input
-                                            type="tel"
-                                            value={phoneNumber}
-                                            onChange={(e) => setPhoneNumber(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 bg-slate-50/50"
-                                            placeholder="+44 20 7123 4567"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                        Email
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                        <input
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 bg-slate-50/50"
-                                            placeholder="client@example.com"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                        Address
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute top-3 left-3 pointer-events-none">
-                                            <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>
-                                        </div>
-                                        <textarea
-                                            value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
-                                            rows="4"
-                                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 bg-slate-50/50 resize-none"
-                                            placeholder="25 Berkeley Square&#10;Mayfair, London W1J 6QF&#10;United Kingdom"
-                                        />
+                            {/* Row 2: Address (Full Width) */}
+                            <div className="mb-4">
+                                <label className="font-['Epilogue'] font-normal text-[16px] leading-[24px] text-[#131313] block mb-2">
+                                    Address
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute left-3 top-3">
+                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
                                     </div>
+                                    <textarea
+                                        value={address}
+                                        onChange={(e) => setAddress(e.target.value)}
+                                        rows="3"
+                                        className="w-full pl-11 pr-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue'] resize-none"
+                                        placeholder="25 Berkeley Square&#10;Mayfair, London W1J 6QF&#10;United Kingdom"
+                                    />
                                 </div>
+                            </div>
+
+                            {/* Row 3: Attention and Email */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                    <label className="font-['Epilogue'] font-normal text-[16px] leading-[24px] text-[#131313] block mb-2">
                                         Attention (Person Name)
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
                                         <input
                                             type="text"
                                             value={attention}
                                             onChange={(e) => setAttention(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 bg-slate-50/50"
+                                            className="w-full pl-11 pr-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
                                             placeholder="Mr. Edward Hamilton"
                                         />
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Invoice Date
-                                        </label>
+
+                                <div>
+                                    <label className="font-['Epilogue'] font-normal text-[16px] leading-[24px] text-[#131313] block mb-2">
+                                        Email
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <input
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full pl-11 pr-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
+                                            placeholder="ehamilton@hamiltonfq.com"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Row 4: VAT Rate, Invoice Date, Due Date */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                <div>
+                                    <label className="font-['Epilogue'] font-normal text-[16px] leading-[24px] text-[#131313] block mb-2">
+                                        VAT Rate (%)
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828a2 2 0 01.586 1.414V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="100"
+                                            step="0.1"
+                                            value={vatRate}
+                                            onChange={(e) => setVatRate(parseFloat(e.target.value) || 0)}
+                                            className="w-full pl-11 pr-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
+                                            placeholder="6.5"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="font-['Epilogue'] font-normal text-[16px] leading-[24px] text-[#131313] block mb-2">
+                                        Invoice Date
+                                    </label>
+                                    <div className="relative">
                                         <input
                                             type="text"
                                             value={date}
                                             onChange={(e) => setDate(e.target.value)}
-                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 bg-slate-50/50"
+                                            className="w-full px-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
                                             placeholder="May 22, 2026"
                                         />
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Due Date
-                                        </label>
+                                </div>
+
+                                <div>
+                                    <label className="font-['Epilogue'] font-normal text-[16px] leading-[24px] text-[#131313] block mb-2">
+                                        Due Date
+                                    </label>
+                                    <div className="relative">
                                         <input
                                             type="text"
                                             value={dueDate}
                                             onChange={(e) => setDueDate(e.target.value)}
-                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 bg-slate-50/50"
+                                            className="w-full px-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
                                             placeholder="June 21, 2026"
                                         />
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Items Section */}
-                        <div className="mb-8">
-                            <div className="flex justify-between items-center mb-6">
+                        <div className="mb-6 px-[100px]">
+                            <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center">
-                                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    <div className="w-10 h-10 bg-[#131313] rounded-full flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                         </svg>
                                     </div>
-                                    <h2 className="text-lg font-semibold text-slate-900">Invoice Items</h2>
+                                    <h2 className="font-['Lora'] font-medium text-[18px] leading-[24px] text-[#131313]">
+                                        Items Information
+                                    </h2>
                                 </div>
                                 <button
                                     type="button"
                                     onClick={addItem}
-                                    className="group px-5 py-2.5 bg-gradient-to-r from-slate-900 to-slate-700 text-white rounded-xl hover:shadow-lg transition-all duration-200 flex items-center gap-2 text-sm font-medium"
+                                    className="flex items-center gap-2 px-4 py-2.5 bg-[#131313] text-[#BDFD66] rounded-lg hover:bg-[#2a2a2a] transition-all font-['Epilogue'] font-medium text-[14px]"
                                 >
-                                    <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-4 h-4 text-[#BDFD66]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                     </svg>
                                     Add Item
                                 </button>
                             </div>
 
-                            <div className="overflow-x-auto rounded-xl border border-slate-200">
+                            {/* Items Table */}
+                            <div className="bg-[#F8F8F8] rounded-xl border border-[rgba(19,19,19,0.15)] overflow-hidden">
                                 <table className="w-full">
-                                    <thead className="bg-slate-50">
-                                        <tr>
-                                            <th className="px-5 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Item Name</th>
-                                            <th className="px-5 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Description</th>
-                                            <th className="px-5 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Quantity</th>
-                                            <th className="px-5 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Unit Price (€)</th>
-                                            <th className="px-5 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Total (€)</th>
-                                            <th className="px-5 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider"></th>
+                                    <thead>
+                                        <tr className="bg-[#F0F0F0] border-b border-[rgba(19,19,19,0.1)]">
+                                            <th className="text-left px-4 py-4 font-['Epilogue'] font-semibold text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[18%]">ITEM NAME</th>
+                                            <th className="text-left px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[32%]">DESCRIPTION</th>
+                                            <th className="text-left px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[10%]">QUANTITY</th>
+                                            <th className="text-left px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[15%]">UNIT PRICE</th>
+                                            <th className="text-left px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[15%]">TOTAL</th>
+                                            <th className="text-center px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[10%]">ACTION</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-100">
+                                    <tbody>
                                         {items.map((item) => (
-                                            <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                                                <td className="px-5 py-3">
+                                            <tr key={item.id} className="bg-[#F0F0F0] border-b border-[rgba(19,19,19,0.06)] hover:bg-gray-50/80 transition-colors">
+                                                <td className="px-4 py-3">
                                                     <input
                                                         type="text"
                                                         value={item.name}
                                                         onChange={(e) => updateItem(item.id, 'name', e.target.value)}
-                                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 text-sm"
+                                                        className="w-full px-3 py-2.5 bg-white border border-[rgba(19,19,19,0.2)] rounded-lg focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none text-[14px] font-['Epilogue'] text-[#131313] placeholder:text-[#9CA3AF] transition-all"
                                                         placeholder="Round Brilliant Cut Diamond"
                                                     />
                                                 </td>
-                                                <td className="px-5 py-3">
+                                                <td className="px-4 py-3">
                                                     <input
                                                         type="text"
                                                         value={item.description}
                                                         onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 text-sm"
-                                                        placeholder="3.02 ct | D Color | VVS2 Clarity"
+                                                        className="w-full px-3 py-2.5 bg-white border border-[rgba(19,19,19,0.2)] rounded-lg focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none text-[14px] font-['Epilogue'] text-[#131313] placeholder:text-[#9CA3AF] transition-all"
+                                                        placeholder="3.02 ct | D Color | VVS2 Clarity | Excellent Cut"
                                                     />
                                                 </td>
-                                                <td className="px-5 py-3">
+                                                <td className="px-4 py-3">
                                                     <input
                                                         type="number"
                                                         min="1"
                                                         value={item.quantity}
                                                         onChange={(e) => updateItem(item.id, 'quantity', parseInt(e.target.value) || 0)}
-                                                        className="w-24 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 text-sm"
+                                                        className="w-full px-3 py-2.5 bg-white border border-[rgba(19,19,19,0.2)] rounded-lg focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none text-[14px] font-['Epilogue'] text-[#131313] transition-all"
                                                     />
                                                 </td>
-                                                <td className="px-5 py-3">
+                                                <td className="px-4 py-3">
                                                     <input
                                                         type="number"
                                                         min="0"
                                                         step="0.01"
                                                         value={item.price}
                                                         onChange={(e) => updateItem(item.id, 'price', parseFloat(e.target.value) || 0)}
-                                                        className="w-32 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all duration-200 text-sm"
+                                                        className="w-full px-3 py-2.5 bg-white border border-[rgba(19,19,19,0.2)] rounded-lg focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none text-[14px] font-['Epilogue'] text-[#131313] transition-all"
                                                     />
                                                 </td>
-                                                <td className="px-5 py-3 text-slate-900 font-semibold">
-                                                    €{(item.quantity * item.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                <td className="px-4 py-3">
+                                                    <span className="font-['Epilogue'] font-semibold text-[15px] text-[#131313]">
+                                                        €{formatCurrency(item.quantity * item.price)}
+                                                    </span>
                                                 </td>
-                                                <td className="px-5 py-3">
+                                                <td className="px-4 py-3 text-center">
                                                     <button
                                                         type="button"
                                                         onClick={() => removeItem(item.id)}
-                                                        className="text-slate-400 hover:text-red-600 transition-colors disabled:opacity-50"
                                                         disabled={items.length === 1}
+                                                        className="text-[#DB504A] hover:text-[#b8433a] transition-colors disabled:opacity-30 disabled:cursor-not-allowed p-1.5 rounded-lg hover:bg-red-50"
                                                     >
                                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                         </svg>
                                                     </button>
                                                 </td>
@@ -473,110 +557,152 @@ const InvoiceForm = () => {
                             </div>
                         </div>
 
-                        {/* Actions */}
-                        <div className="flex justify-end gap-4 pt-6 border-t border-slate-200">
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setOrderNo('INV-2026-0522-017');
-                                    setCustomerName('The Hamilton Family Office');
-                                    setPhoneNumber('+44 20 7123 4567');
-                                    setAddress('25 Berkeley Square\nMayfair, London W1J 6QF\nUnited Kingdom');
-                                    setAttention('Mr. Edward Hamilton');
-                                    setEmail('ehamilton@hamiltonfq.com');
-                                    setDate('May 22, 2026');
-                                    setDueDate('June 21, 2026');
-                                    setItems([
-                                        {
-                                            id: 1,
-                                            name: 'Round Brilliant Cut Diamond',
-                                            description: '3.02 ct | D Color | VVS2 Clarity | Excellent Cut | GIA Certificate No. 2487136210 | Origin: Botswana',
-                                            quantity: 1,
-                                            price: 210000
-                                        },
-                                        {
-                                            id: 2,
-                                            name: 'Cushion Cut Diamond',
-                                            description: '2.01 ct | F Color | VS1 Clarity | Ideal Cut | GIA Certificate No. 5298473921 | Origin: Lesotho',
-                                            quantity: 3,
-                                            price: 125000
-                                        },
-                                        {
-                                            id: 3,
-                                            name: 'Emerald Cut Diamond',
-                                            description: '4.50 ct | H Color | VVS1 Clarity | Excellent Cut | GIA Certificate No. 9876543210 | Origin: Namibia',
-                                            quantity: 1,
-                                            price: 195000
-                                        },
-                                        {
-                                            id: 4,
-                                            name: 'Princess Cut Diamond',
-                                            description: '2.75 ct | E Color | VS2 Clarity | Very Good Cut | GIA Certificate No. 1234567890 | Origin: Canada',
-                                            quantity: 1,
-                                            price: 89000
-                                        },
-                                        {
-                                            id: 5,
-                                            name: 'Oval Cut Diamond',
-                                            description: '5.10 ct | G Color | IF Clarity | Excellent Cut | GIA Certificate No. 3456789012 | Origin: South Africa',
-                                            quantity: 1,
-                                            price: 310000
-                                        }
-                                    ]);
-                                    setNextId(6);
-                                }}
-                                className="px-6 py-2.5 border-2 border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all duration-200 font-medium"
-                            >
-                                Reset to Demo
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setOrderNo('');
-                                    setCustomerName('');
-                                    setPhoneNumber('');
-                                    setAddress('');
-                                    setAttention('');
-                                    setEmail('');
-                                    setDate('May 22, 2026');
-                                    setDueDate('June 21, 2026');
-                                    setItems([{ id: 1, name: '', description: '', quantity: 1, price: 0 }]);
-                                    setNextId(2);
-                                }}
-                                className="px-6 py-2.5 border-2 border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all duration-200 font-medium"
-                            >
-                                Clear Form
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleExportPDF}
-                                disabled={!orderNo || !customerName || isGenerating || items.some(item => !item.name || item.quantity <= 0 || item.price < 0)}
-                                className="px-8 py-2.5 bg-gradient-to-r from-slate-900 to-slate-700 text-white rounded-xl hover:shadow-lg transition-all duration-200 font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isGenerating ? (
-                                    <>
-                                        <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Generating...
-                                    </>
-                                ) : (
-                                    <>
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        Export PDF
-                                    </>
-                                )}
-                            </button>
+                        {/* Action Buttons */}
+                        <div className="flex px-[100px] flex-wrap items-center mb-3 justify-end gap-4 pt-4">
+                            <div className="flex flex-wrap gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setOrderNo('INV-2026-0522-017');
+                                        setCustomerName('The Hamilton Family Office');
+                                        setVatRate(6.5);
+                                        setAddress('25 Berkeley Square\nMayfair, London W1J 6QF\nUnited Kingdom');
+                                        setAttention('Mr. Edward Hamilton');
+                                        setEmail('ehamilton@hamiltonfq.com');
+                                        setDate('May 22, 2026');
+                                        setDueDate('June 21, 2026');
+                                        setItems([
+                                            {
+                                                id: 1,
+                                                name: 'Round Brilliant Cut Diamond',
+                                                description: '3.02 ct | D Color | VVS2 Clarity | Excellent Cut | GIA Certificate No. 2487136210 | Origin: Botswana',
+                                                quantity: 1,
+                                                price: 210000
+                                            },
+                                            {
+                                                id: 2,
+                                                name: 'Cushion Cut Diamond',
+                                                description: '2.01 ct | F Color | VS1 Clarity | Ideal Cut | GIA Certificate No. 5298473921 | Origin: Lesotho',
+                                                quantity: 3,
+                                                price: 125000
+                                            },
+                                            {
+                                                id: 3,
+                                                name: 'Emerald Cut Diamond',
+                                                description: '4.50 ct | H Color | VVS1 Clarity | Excellent Cut | GIA Certificate No. 9876543210 | Origin: Namibia',
+                                                quantity: 1,
+                                                price: 195000
+                                            },
+                                            {
+                                                id: 4,
+                                                name: 'Princess Cut Diamond',
+                                                description: '2.75 ct | E Color | VS2 Clarity | Very Good Cut | GIA Certificate No. 1234567890 | Origin: Canada',
+                                                quantity: 1,
+                                                price: 89000
+                                            },
+                                            {
+                                                id: 5,
+                                                name: 'Oval Cut Diamond',
+                                                description: '5.10 ct | G Color | IF Clarity | Excellent Cut | GIA Certificate No. 3456789012 | Origin: South Africa',
+                                                quantity: 1,
+                                                price: 310000
+                                            }
+                                        ]);
+                                        setNextId(6);
+                                    }}
+                                    className="flex items-center gap-2 px-4 py-2.5 border border-[#131313] hover:bg-gray-50 transition-all font-['Epilogue'] font-medium text-[14px] text-[#131313]"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                    Reset to Demo
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setOrderNo('');
+                                        setCustomerName('');
+                                        setVatRate(6.5);
+                                        setAddress('');
+                                        setAttention('');
+                                        setEmail('');
+                                        setDate('May 22, 2026');
+                                        setDueDate('June 21, 2026');
+                                        setItems([{ id: 1, name: '', description: '', quantity: 1, price: 0 }]);
+                                        setNextId(2);
+                                    }}
+                                    className="flex items-center gap-2 px-4 py-2.5 border border-[#131313] hover:bg-gray-50 transition-all font-['Epilogue'] font-medium text-[14px] text-[#131313]"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                    </svg>
+                                    Clear Form
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleExportPDF}
+                                    disabled={!orderNo || !customerName || isGenerating || items.some(item => !item.name || item.quantity <= 0 || item.price < 0)}
+                                    className="flex items-center gap-2 px-6 py-2.5 bg-[#BDFD66] text-[#131313] hover:bg-[#a8e85a] transition-all font-['Epilogue'] font-medium text-[14px] disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isGenerating ? (
+                                        <>
+                                            <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Generating...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            Generate Invoice PDF
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="mt-6 px-[100px] pt-6 border-t border-gray-200/30">
+                    <div className="flex flex-col items-start gap-4">
+                        {/* Row 1: Logo and Product info */}
+                        <div className="flex items-center gap-3">
+                            <img src={logo1} alt="Kunu Labs" className="h-[36px] w-auto" />
                         </div>
 
-                        <p className="text-xs text-slate-500 mt-6 text-center">
-                            <span className="inline-flex items-center gap-1">🔒 All information is processed locally</span>
-                            <span className="mx-2">•</span>
-                            <span>Order Number and Customer Name are required</span>
+                        {/* Row 2: Copyright */}
+                        <p className="font-['Merriweather'] text-[13px] text-[rgba(0,0,0,0.6)] tracking-[-0.42px]">
+                            © 2026 All Things Studio Kft
                         </p>
+
+                        {/* Row 3: LinkedIn (Left) & Terms & Privacy Policy (Right) */}
+                        <div className="flex items-center justify-between w-full mb-12">
+                            <div className="flex items-center gap-2">
+                                <a
+                                    href="#"
+                                    className="font-['Epilogue'] text-[14px] text-[#131313] hover:opacity-70 transition-opacity flex items-center gap-2"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                                    </svg>
+                                </a>
+                            </div>
+
+                            <div className="flex items-center gap-5">
+                                <a href="#" className="font-['Epilogue'] text-[14px] text-[#131313] underline hover:opacity-70 transition-opacity">
+                                    Terms & Conditions
+                                </a>
+                                <a href="#" className="font-['Epilogue'] text-[14px] text-[#131313] underline hover:opacity-70 transition-opacity">
+                                    Privacy Policy
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
