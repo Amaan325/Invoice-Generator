@@ -3,6 +3,19 @@ import { pdf } from '@react-pdf/renderer';
 import InvoicePDF from './InvoicePDF';
 import logo1 from "../assets/icons/Logo.svg";
 import logo2 from "../assets/icons/logo1.svg";
+import total_item_icon from "../assets/icons/total_item_icon.svg";
+import gross_icon from "../assets/icons/gross_total.png";
+import vat_icon from "../assets/icons/VAT_icon.png";
+import net_total_icon from "../assets/icons/net_total_icon.png";
+import invoice_info_icon from "../assets/icons/invoice_icon.png";
+import hash_icon from "../assets/icons/hash_icon.png";
+import profile_icon from "../assets/icons/customer_icon.png";
+import address_icon from "../assets/icons/address_icon.png";
+import attention_icon from "../assets/icons/attention_icon.png";
+import mail from "../assets/icons/mail_icon.png";
+import vat_icon2 from "../assets/icons/vat_icon2.png";
+import calender from "../assets/icons/calender_icon.png";
+import item_section_icon from "../assets/icons/item_section_icon.png"
 
 const InvoiceForm = () => {
     // Pre-filled demo data for testing
@@ -172,7 +185,7 @@ const InvoiceForm = () => {
                                 PDF Generator for Veristone
                             </h1>
                             <p className="font-['Epilogue'] font-light text-[18px] leading-[24px] text-[#131313] mt-2">
-                                Powered by kuru labs
+                                Powered by kunu labs
                             </p>
                         </div>
 
@@ -201,15 +214,14 @@ const InvoiceForm = () => {
 
                     {/* Form Content */}
                     <div className="py-6">
-                        <div className="flex flex-wrap gap-[58px] mb-6 px-[100px]">
-                            <div className="bg-[#EFEEF1] rounded-xl p-4" style={{ width: '286px' }}>
+                        <div className="flex flex-wrap gap-4 mb-6 px-[100px]">
+                            {/* Total Items */}
+                            <div className="flex-1 min-w-[200px] bg-[#EFEEF1] rounded-xl p-4" style={{ height: '110px' }}>
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                        </svg>
+                                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                                        <img src={total_item_icon} alt="Total Items" className="w-[48px] h-[48px]" />
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col gap-3">
                                         <p className="font-['Epilogue'] font-light text-[16px] leading-[24px] text-[#131313]">Total Items</p>
                                         <p className="font-['Epilogue'] font-semibold text-[20px] leading-[24px] tracking-[-0.5px] text-[#12141D]">
                                             {items.length}
@@ -218,14 +230,13 @@ const InvoiceForm = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-[#EFEEF1] rounded-xl p-4" style={{ width: '286px' }}>
+                            {/* Net Total */}
+                            <div className="flex-1 min-w-[200px] bg-[#EFEEF1] rounded-xl p-4" style={{ height: '110px' }}>
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
+                                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                                        <img src={net_total_icon} alt="Net Total" className="w-[48px] h-[48px]" />
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col gap-3">
                                         <p className="font-['Epilogue'] font-light text-[16px] leading-[24px] text-[#131313]">Net Total</p>
                                         <p className="font-['Epilogue'] font-semibold text-[20px] leading-[24px] tracking-[-0.5px] text-[#12141D]">
                                             €{formatCurrency(calculateTotal())}
@@ -234,14 +245,13 @@ const InvoiceForm = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-[#EFEEF1] rounded-xl p-4" style={{ width: '286px' }}>
+                            {/* VAT */}
+                            <div className="flex-1 min-w-[200px] bg-[#EFEEF1] rounded-xl p-4" style={{ height: '110px' }}>
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828a2 2 0 01.586 1.414V19a2 2 0 01-2 2z" />
-                                        </svg>
+                                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                                        <img src={vat_icon} alt="VAT" className="w-[48px] h-[48px]" />
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col gap-3">
                                         <p className="font-['Epilogue'] font-light text-[16px] leading-[24px] text-[#131313]">VAT ({vatRate}%)</p>
                                         <p className="font-['Epilogue'] font-semibold text-[20px] leading-[24px] tracking-[-0.5px] text-[#12141D]">
                                             €{formatCurrency(calculateTotal() * (vatRate / 100))}
@@ -250,14 +260,13 @@ const InvoiceForm = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-[#EFEEF1] rounded-xl p-4" style={{ width: '286px' }}>
+                            {/* Gross Total */}
+                            <div className="flex-1 min-w-[200px] bg-[#EFEEF1] rounded-xl p-4" style={{ height: '110px' }}>
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                                        </svg>
+                                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                                        <img src={gross_icon} alt="Gross Total" className="w-[48px] h-[48px]" />
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col gap-3">
                                         <p className="font-['Epilogue'] font-light text-[16px] leading-[24px] text-[#131313]">Gross Total</p>
                                         <p className="font-['Epilogue'] font-semibold text-[20px] leading-[24px] tracking-[-0.5px] text-[#12141D]">
                                             €{formatCurrency(calculateTotal() * (1 + vatRate / 100))}
@@ -270,10 +279,8 @@ const InvoiceForm = () => {
                         {/* Form Fields - Invoice Information Section */}
                         <div className="mb-6 px-[100px] pt-0">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 bg-[#131313] rounded-full flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                    </svg>
+                                <div className="w-14 h-14 bg-[#131313] rounded-full flex items-center justify-center flex-shrink-0">
+                                    <img src={invoice_info_icon} alt="Invoice Information" className="w-[56px] h-[56px]" />
                                 </div>
                                 <h2 className="font-['Lora'] font-medium text-[18px] leading-[24px] text-[#131313]">
                                     Invoice Information
@@ -288,9 +295,7 @@ const InvoiceForm = () => {
                                     </label>
                                     <div className="relative">
                                         <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                                            </svg>
+                                            <img src={hash_icon} alt="Invoice Number" className="w-6 h-6" />
                                         </div>
                                         <input
                                             type="text"
@@ -308,9 +313,7 @@ const InvoiceForm = () => {
                                     </label>
                                     <div className="relative">
                                         <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                            </svg>
+                                            <img src={profile_icon} alt="Customer Name" className="w-6 h-6" />
                                         </div>
                                         <input
                                             type="text"
@@ -330,10 +333,7 @@ const InvoiceForm = () => {
                                 </label>
                                 <div className="relative">
                                     <div className="absolute left-3 top-3">
-                                        <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
+                                        <img src={address_icon} alt="Address" className="w-5 h-5" />
                                     </div>
                                     <textarea
                                         value={address}
@@ -353,9 +353,7 @@ const InvoiceForm = () => {
                                     </label>
                                     <div className="relative">
                                         <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
+                                            <img src={attention_icon} alt="Attention" className="w-5 h-5" />
                                         </div>
                                         <input
                                             type="text"
@@ -373,9 +371,7 @@ const InvoiceForm = () => {
                                     </label>
                                     <div className="relative">
                                         <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
+                                            <img src={mail} alt="Email" className="w-5 h-5" />
                                         </div>
                                         <input
                                             type="email"
@@ -396,9 +392,7 @@ const InvoiceForm = () => {
                                     </label>
                                     <div className="relative">
                                         <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                                            <svg className="w-5 h-5 text-[#131313]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828a2 2 0 01.586 1.414V19a2 2 0 01-2 2z" />
-                                            </svg>
+                                            <img src={vat_icon2} alt="VAT Rate" className="w-5 h-5" />
                                         </div>
                                         <input
                                             type="number"
@@ -418,11 +412,14 @@ const InvoiceForm = () => {
                                         Invoice Date
                                     </label>
                                     <div className="relative">
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                                            <img src={calender} alt="Invoice Date" className="w-5 h-5" />
+                                        </div>
                                         <input
                                             type="text"
                                             value={date}
                                             onChange={(e) => setDate(e.target.value)}
-                                            className="w-full px-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
+                                            className="w-full pl-11 pr-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
                                             placeholder="May 22, 2026"
                                         />
                                         <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -438,11 +435,14 @@ const InvoiceForm = () => {
                                         Due Date
                                     </label>
                                     <div className="relative">
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                                            <img src={calender} alt="Due Date" className="w-5 h-5" />
+                                        </div>
                                         <input
                                             type="text"
                                             value={dueDate}
                                             onChange={(e) => setDueDate(e.target.value)}
-                                            className="w-full px-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
+                                            className="w-full pl-11 pr-3 py-3 border border-[rgba(19,19,19,0.3)] rounded-xl focus:ring-2 focus:ring-[#131313] focus:border-transparent outline-none transition-all bg-white text-[16px] font-['Epilogue']"
                                             placeholder="June 21, 2026"
                                         />
                                         <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -454,15 +454,12 @@ const InvoiceForm = () => {
                                 </div>
                             </div>
                         </div>
-
                         {/* Items Section */}
                         <div className="mb-6 px-[100px]">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-[#131313] rounded-full flex items-center justify-center">
-                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                        </svg>
+                                    <div className="w-14 h-14 bg-[#131313] rounded-full flex items-center justify-center flex-shrink-0">
+                                        <img src={item_section_icon} alt="Items Information" className="w-[56px] h-[56px]" />
                                     </div>
                                     <h2 className="font-['Lora'] font-medium text-[18px] leading-[24px] text-[#131313]">
                                         Items Information
