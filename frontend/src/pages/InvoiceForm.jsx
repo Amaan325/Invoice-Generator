@@ -482,8 +482,8 @@ const InvoiceForm = () => {
                                 <table className="w-full">
                                     <thead>
                                         <tr className="bg-[#F0F0F0] border-b border-[rgba(19,19,19,0.1)]">
-                                            <th className="text-left px-4 py-4 font-['Epilogue'] font-semibold text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[18%]">ITEM NAME</th>
-                                            <th className="text-left px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[32%]">DESCRIPTION</th>
+                                            <th className="text-left px-4 py-4 font-['Epilogue'] font-semibold text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[25%]">ITEM NAME</th>
+                                            <th className="text-left px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[55%]">DESCRIPTION</th>
                                             <th className="text-left px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[10%]">QUANTITY</th>
                                             <th className="text-left px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[15%]">UNIT PRICE</th>
                                             <th className="text-left px-4 py-4 font-['Epilogue'] font-medium text-[11px] tracking-[0.12em] uppercase text-[#131313] w-[15%]">TOTAL</th>
