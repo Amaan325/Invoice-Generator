@@ -179,7 +179,7 @@ const InvoiceForm = () => {
                 <div className="mt-6 bg-white overflow-hidden">
 
                     {/* Tab Navigation */}
-                    <div className="flex items-start px-[100px] p-6 gap-8 border-gray-100">
+                    <div className="flex items-start px-[100px] mt-6 p-6 gap-8 border-gray-100">
                         <div className="flex-1">
                             <h1 className="font-['Merriweather'] font-bold text-[46px] leading-[42px] tracking-[-0.8px] text-[#12141D]">
                                 PDF Generator for Veristone
